@@ -1,9 +1,18 @@
 import code
+import inspect
 import readline
 import rlcompleter
 import sys
 
-frame = sys._getframe(1)
+frame = inspect.currentframe()
+while True:
+    module = inspect.getmodule(frame)
+    in_importlib = not module and 'importlib' in frame.f_code.co_filename
+    if not in_importlib and module.__name__ != 'debugme':
+        break
+    frame_, frame = frame, frame.f_back
+    del(frame_)
+
 vars = frame.f_globals
 vars.update(frame.f_locals)
 del(frame)
