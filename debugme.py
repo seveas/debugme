@@ -3,6 +3,8 @@ import inspect
 import readline
 import rlcompleter
 import sys
+from pprint import pprint
+sys.displayhook = pprint
 
 frame = inspect.currentframe()
 while True:
