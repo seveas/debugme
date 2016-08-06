@@ -1,0 +1,33 @@
+Source: debugme
+Maintainer: Dennis Kaarsemaker <dennis@kaarsemaker.net>
+Homepage: https://github.com/seveas/debugme
+Section: python
+X-Python-Version: >= 2.6
+X-Python3-Version: >= 3.2
+Priority: optional
+Build-Depends: debhelper (>= 9),
+               dh-python,
+               pypy,
+               pypy-setuptools,
+               python-all,
+               python3-all,
+               python-setuptools,
+Standards-Version: 3.9.7
+
+Package: python-debugme
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: Different interactive debugger for python
+  Interactive debugger for lazy developers.
+
+Package: python3-debugme
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: Different interactive debugger for python
+  Interactive debugger for lazy developers.
+
+Package: pypy-debugme
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: Different interactive debugger for python
+  Interactive debugger for lazy developers.
