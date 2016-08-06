@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name = "debugme",
-      version = "1.2",
+      version = "1.4",
       author = "Dennis Kaarsemaker",
       author_email = "dennis@kaarsemaker.net",
       url = "http://github.com/seveas/debugme",
