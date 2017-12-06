@@ -11,7 +11,7 @@ frame = inspect.currentframe()
 while True:
     module = inspect.getmodule(frame)
     in_importlib = not module and 'importlib' in frame.f_code.co_filename
-    if not in_importlib and module.__name__ != 'debugme':
+    if not in_importlib and (not module or module.__name__ != 'debugme'):
         break
     frame_, frame = frame, frame.f_back
     del(frame_)
