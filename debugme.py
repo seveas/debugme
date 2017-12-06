@@ -3,6 +3,7 @@ import inspect
 import readline
 import rlcompleter
 import sys
+import traceback
 from pprint import pprint
 sys.displayhook = pprint
 
@@ -17,10 +18,22 @@ while True:
 
 vars = frame.f_globals
 vars.update(frame.f_locals)
-del(frame)
 
-class debugme: exit = True
-vars['debugme'] = debugme()
+class formatted_repr(str):
+    def __repr__(self):
+        return self
+
+class debugme:
+    def __init__(self, frame):
+        self.frame = frame
+        self.exit = True
+        self.traceback = formatted_repr(''.join(traceback.format_stack(self.frame)).strip())
+
+    def __del__(self):
+        del(self.frame)
+
+vars['debugme'] = debugme(frame)
+del(frame)
 
 readline.set_completer(rlcompleter.Completer(vars).complete)
 readline.parse_and_bind("tab: complete")
