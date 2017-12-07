@@ -1,3 +1,9 @@
+debugme (1.5-1) bionic; urgency=medium
+
+  * New uptream version 
+
+ -- Dennis Kaarsemaker <dennis@kaarsemaker.net>  Thu, 07 Dec 2017 16:11:23 +0100
+
 debugme (1.4-1) xenial; urgency=medium
 
   * New upstream version
