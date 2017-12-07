@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name = "debugme",
       version = "1.4",
       author = "Dennis Kaarsemaker",
       author_email = "dennis@kaarsemaker.net",
+      license = "zlib",
       url = "http://github.com/seveas/debugme",
       description = "Interactive terminal for inspecting the running state of a python program",
       py_modules = ["debugme"],
