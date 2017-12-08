@@ -1,3 +1,9 @@
+debugme (1.6-2) UNRELEASED; urgency=medium
+
+  * We now require setuptools
+
+ -- Dennis Kaarsemaker <dennis@kaarsemaker.net>  Fri, 08 Dec 2017 14:56:12 +0100
+
 debugme (1.6-1) bionic; urgency=medium
 
   *  New upstream package
