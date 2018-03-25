@@ -1,14 +1,8 @@
-debugme (1.6.3-1) bionic; urgency=medium
+debugme (1.7-1) bionic; urgency=medium
 
-  * New upstream test package
+  * New upstream package 
 
- -- Dennis Kaarsemaker <dennis@kaarsemaker.net>  Sun, 25 Mar 2018 00:33:21 +0100
-
-debugme (1.6.2-1) bionic; urgency=medium
-
-  * New upstream test package
-
- -- Dennis Kaarsemaker <dennis@kaarsemaker.net>  Sat, 24 Mar 2018 00:24:03 +0100
+ -- Dennis Kaarsemaker <dennis@kaarsemaker.net>  Sun, 25 Mar 2018 01:19:15 +0100
 
 debugme (1.6-2) bionic; urgency=medium
 
