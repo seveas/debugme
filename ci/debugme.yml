@@ -1,0 +1,152 @@
+---
+resource_types:
+  - name: pypi
+    type: docker-image
+    source:
+      repository: cfplatformeng/concourse-pypi-resource
+
+  - name: dput
+    type: docker-image
+    source:
+      repository: seveas/concourse-dput-resource
+
+  - name: ppa
+    type: docker-image
+    source:
+      repository: seveas/concourse-ppa-resource
+
+resources:
+  - name: debugme-git
+    type: git
+    source:
+      uri: https://github.com/seveas/debugme.git
+      branch: master
+      tag_filter: '*'
+
+  - name: debugme-git-debian
+    type: git
+    source:
+      uri: https://github.com/seveas/debugme.git
+      branch: debian
+
+  - name: debugme-pypi
+    type: pypi
+    source:
+      name: debugme
+      username: ((pypi-username))
+      password: ((pypi-password))
+
+  - name: debugme-dput
+    type: dput
+    source:
+      archive: dennis/python
+
+  - name: debugme-ppa
+    type: ppa
+    source:
+      ppa: dennis/python
+      package: debugme
+      api_token: ((launchpad-token))
+
+jobs:
+  - name: tarball
+    plan:
+      - get: debugme-git
+        trigger: true
+      - task: tarball
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: python
+              tag: latest
+          inputs:
+            - name: debugme-git
+          outputs:
+            - name: tarball
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                cd debugme-git
+                python setup.py sdist -d ../tarball
+      - put: debugme-pypi
+        params:
+          glob: tarball/debugme*.tar.gz
+ 
+  - name: ppa
+    plan:
+      - get: debugme-pypi
+        trigger: true
+      - get: debugme-git-debian
+      - task: build
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: seveas/build-python
+              tag: latest
+          inputs:
+            - name: debugme-git-debian
+            - name: debugme-pypi
+          outputs:
+            - name: sources
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                perl -E 'say $ENV{GPG_KEY}' | gpg --import
+                cd debugme-pypi
+                version=$(cat version)
+                mv debugme-$version.tar.gz debugme_$version.orig.tar.gz
+                tar zxvf debugme_$version.orig.tar.gz
+                cd debugme-$version
+                mv ../../debugme-git-debian/debian .
+                debuild -S -si
+                cd ..
+                mv debugme_$version* ../sources
+          params:
+            GPG_KEY: ((gpg-key))
+      - put: debugme-dput
+        params:
+          glob: sources/*.changes
+
+  - name: ppa-porter
+    plan:
+      - get: debugme-ppa
+        trigger: true
+      - task: split
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: seveas/concourse-ppa-resource
+              tag: latest
+          inputs:
+            - name: debugme-ppa
+          outputs:
+            - name: sources
+          run:
+            path: sh
+            args: 
+              - -exc
+              - |
+                perl -E 'say $ENV{GPG_KEY}' | gpg --import
+                apt-get update
+                apt-get -y install python-setuptools python3-setuptools pypy-setuptools
+                ppa-split debugme-ppa ../sources
+          params:
+            GPG_KEY: ((gpg-key))
+            API_TOKEN: ((launchpad-token))
+            DEBFULLNAME: Dennis Kaarsemaker
+            DEBEMAIL: dennis@kaarsemaker.net
+      - put: debugme-dput
+        params:
+          glob: sources/*.changes
+          allow_noop: true
+
