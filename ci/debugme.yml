@@ -39,7 +39,7 @@ resources:
   - name: debugme-dput
     type: dput
     source:
-      archive: dennis/python
+      archive: ppa:dennis/python
 
   - name: debugme-ppa
     type: ppa
