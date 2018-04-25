@@ -1,3 +1,9 @@
+debugme (1.8-1) bionic; urgency=medium
+
+  * New upstream release 
+
+ -- Dennis Kaarsemaker <dennis@kaarsemaker.net>  Thu, 26 Apr 2018 00:01:10 +0200
+
 debugme (1.7-1) bionic; urgency=medium
 
   * New upstream package 
