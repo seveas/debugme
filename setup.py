@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name = "debugme",
-      version = "1.7",
+      version = "1.8",
       author = "Dennis Kaarsemaker",
       author_email = "dennis@kaarsemaker.net",
       license = "zlib",
