@@ -15,10 +15,17 @@ def displayhook(value):
 sys.displayhook = displayhook
 
 frame = inspect.currentframe()
+exc_info = None
 while True:
     module = inspect.getmodule(frame)
     in_importlib = not module and 'importlib' in frame.f_code.co_filename
     if not in_importlib and (not module or module.__name__ != 'debugme'):
+        if frame.f_code == sys.excepthook.__code__:
+            exc_info = [frame.f_locals[x] for x in frame.f_code.co_varnames[:frame.f_code.co_argcount]]
+            tb = exc_info[2]
+            while tb.tb_next:
+                tb = tb.tb_next
+            frame = tb.tb_frame
         break
     frame_, frame = frame, frame.f_back
     del(frame_)
@@ -31,15 +38,16 @@ class formatted_repr(str):
         return self
 
 class debugme:
-    def __init__(self, frame):
+    def __init__(self, frame, exc_info):
         self.frame = frame
+        self.exc_info = exc_info
         self.exit = True
         self.traceback = formatted_repr(''.join(traceback.format_stack(self.frame)).strip())
 
     def __del__(self):
         del(self.frame)
 
-vars['debugme'] = debugme(frame)
+vars['debugme'] = debugme(frame, exc_info)
 del(frame)
 
 readline.set_completer(rlcompleter.Completer(vars).complete)
