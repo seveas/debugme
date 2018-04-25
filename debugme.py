@@ -5,7 +5,14 @@ import rlcompleter
 import sys
 import traceback
 from pprint import pprint
-sys.displayhook = pprint
+
+def displayhook(value):
+    pprint(value)
+    if isinstance(__builtins__, dict):
+        __builtins__['_'] = value
+    else:
+        __builtins__._ = value
+sys.displayhook = displayhook
 
 frame = inspect.currentframe()
 while True:
