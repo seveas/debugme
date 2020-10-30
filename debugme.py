@@ -1,5 +1,6 @@
 import code
 import inspect
+import os
 import readline
 import rlcompleter
 import sys
@@ -43,7 +44,7 @@ def auto_run():
         module = inspect.getmodule(frame)
         in_importlib = not module and 'importlib' in frame.f_code.co_filename
         if not in_importlib and (not module or module.__name__ != 'debugme'):
-            if frame.f_code == sys.excepthook.__code__:
+            if hasattr(sys.excepthook, '__code__') and frame.f_code == sys.excepthook.__code__:
                 exc_info = [frame.f_locals[x] for x in frame.f_code.co_varnames[:frame.f_code.co_argcount]]
                 tb = exc_info[2]
                 while tb.tb_next:
@@ -63,6 +64,11 @@ def run(frame, exc_info):
     readline.set_completer(rlcompleter.Completer(vars).complete)
     readline.parse_and_bind("tab: complete")
     shell = code.InteractiveConsole(vars)
+    if os.getenv('TESTING_DEBUGME'):
+        if 'debugme_testing_sentinel' not in vars:
+            print("Sentinel value not found, we're in the wrong frame!")
+            sys.exit(1)
+        sys.exit(0)
     shell.interact()
     if vars['debugme'].exit:
         sys.exit(1)
